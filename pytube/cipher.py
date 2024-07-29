@@ -403,12 +403,6 @@ def get_throttling_plan(js: str):
     :returns:
         The full function code for computing the throttlign parameter.
     """
-    raw_code = get_throttling_function_code(js)
-
-    transform_start = r"try{"
-    plan_regex = re.compile(transform_start)
-    match = plan_regex.search(raw_code)
-
     transform_plan_raw = js
 
     # Steps are either c[x](c[y]) or c[x](c[y],c[z])
