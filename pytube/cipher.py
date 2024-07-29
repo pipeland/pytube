@@ -271,6 +271,7 @@ def get_throttling_function_name(js: str) -> str:
         # In the above case, `iha` is the relevant function name
         r'a\.[a-zA-Z]\s*&&\s*\([a-z]\s*=\s*a\.get\("n"\)\)\s*&&\s*'
         r'\([a-z]\s*=\s*([a-zA-Z0-9$]+)(\[\d+\])?\([a-z]\)',
+        r'\([a-z]\s*=\s*([a-zA-Z0-9$]+)(\[\d+\])\([a-z]\)',
     ]
     logger.debug('Finding throttling function name')
     for pattern in function_patterns:
@@ -337,7 +338,7 @@ def get_throttling_function_array(js: str) -> List[Any]:
     array_regex = re.compile(array_start)
     match = array_regex.search(raw_code)
 
-    array_raw = find_object_from_startpoint(raw_code, match.span()[1] - 1)
+    array_raw = js
     str_array = throttling_array_split(array_raw)
 
     converted_array = []
@@ -408,7 +409,7 @@ def get_throttling_plan(js: str):
     plan_regex = re.compile(transform_start)
     match = plan_regex.search(raw_code)
 
-    transform_plan_raw = find_object_from_startpoint(raw_code, match.span()[1] - 1)
+    transform_plan_raw = js
 
     # Steps are either c[x](c[y]) or c[x](c[y],c[z])
     step_start = r"c\[(\d+)\]\(c\[(\d+)\](,c(\[(\d+)\]))?\)"

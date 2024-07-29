@@ -213,6 +213,12 @@ _default_clients = {
         'api_key': 'AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8'
     },
 }
+_default_clients[ "ANDROID"][ "context"]["client"]["clientVersion"] = "19.08.35"
+_default_clients["IOS"]["context"]["client"]["clientVersion"] = "19.08.35"
+_default_clients[ "ANDROID_EMBED"][ "context"][ "client"]["clientVersion"] = "19.08.35"
+_default_clients[ "IOS_EMBED"][ "context"]["client"]["clientVersion"] = "19.08.35"
+_default_clients["IOS_MUSIC"][ "context"]["client"]["clientVersion"] = "6.41"
+_default_clients[ "ANDROID_MUSIC"] = _default_clients[ "ANDROID_CREATOR" ]
 _token_timeout = 1800
 _cache_dir = pathlib.Path(__file__).parent.resolve() / '__cache__'
 _token_file = os.path.join(_cache_dir, 'tokens.json')
