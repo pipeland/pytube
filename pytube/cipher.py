@@ -190,11 +190,23 @@ def get_transform_plan(js: str) -> List[str]:
     'DE.kT(a,8)',
     'DE.VR(a,3)',
     'DE.kT(a,21)']
+
+    new Update
+
+    ['OK.Oy(a, 33)',
+    'OK.ZE(a, 1)',
+    'OK.fn(a, 10)',
+    'OK.fn(a, 7)',
+    'OK.Oy(a, 37)',
+    'OK.fn(a, 43)']
     """
     name = re.escape(get_initial_function_name(js))
-    pattern = r"%s=function\(\w\){[a-z=\.\(\"\)]*;(.*);(?:.+)}" % name
-    logger.debug("getting transform plan")
-    return regex_search(pattern, js, group=1).split(";")
+    pattern = r'\$%s\s*=\s*function\s*\(\w+\)\s*\{([^}]*)\};' % re.escape(name)
+    function_pattern = r'\b[A-Za-z]{2,}\.[A-Za-z]{2,}\(a,\s*\d+\)'
+    results = regex_search(pattern, js, group=1).split(";")
+    filtered_results = [line for line in results if re.search(function_pattern, line)]
+    logger.debug(f"getting transform plan: {filtered_results}")
+    return filtered_results
 
 
 def get_transform_object(js: str, var: str) -> List[str]:
