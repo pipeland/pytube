@@ -259,6 +259,8 @@ def get_transform_map(js: str, var: str) -> Dict:
     for obj in transform_object:
         # AJ:function(a){a.reverse()} => AJ, function(a){a.reverse()}
         name, function = obj.split(":", 1)
+        if function == '"jspb"':
+            continue
         fn = map_functions(function)
         mapper[name] = fn
     return mapper
