@@ -200,13 +200,17 @@ def get_transform_plan(js: str) -> List[str]:
     'OK.Oy(a, 37)',
     'OK.fn(a, 43)']
     """
+    # name = re.escape(get_initial_function_name(js))
+    # pattern = r'\$%s\s*=\s*function\s*\(\w+\)\s*\{([^}]*)\};' % re.escape(name)
+    # function_pattern = r'\b[A-Za-z]{2,}\.[A-Za-z]{2,}\(a,\s*\d+\)'
+    # results = regex_search(pattern, js, group=1).split(";")
+    # filtered_results = [line for line in results if re.search(function_pattern, line)]
+    # logger.debug(f"getting transform plan: {filtered_results}")
+    # return filtered_results
     name = re.escape(get_initial_function_name(js))
-    pattern = r'\$%s\s*=\s*function\s*\(\w+\)\s*\{([^}]*)\};' % re.escape(name)
-    function_pattern = r'\b[A-Za-z]{2,}\.[A-Za-z]{2,}\(a,\s*\d+\)'
-    results = regex_search(pattern, js, group=1).split(";")
-    filtered_results = [line for line in results if re.search(function_pattern, line)]
-    logger.debug(f"getting transform plan: {filtered_results}")
-    return filtered_results
+    pattern = r"%s=function\(\w\){[a-z=\.\(\"\)]*;(.*);(?:.+)}" % name
+    logger.debug("getting transform plan")
+    return regex_search(pattern, js, group=1).split(";")
 
 
 def get_transform_object(js: str, var: str) -> List[str]:
@@ -417,7 +421,12 @@ def get_throttling_plan(js: str):
     :returns:
         The full function code for computing the throttlign parameter.
     """
-    transform_plan_raw = js
+    raw_code = get_throttling_function_code(js)
+
+    transform_start = r"try{"
+    plan_regex = re.compile(transform_start)
+    match = plan_regex.search(raw_code)
+    transform_plan_raw = find_object_from_startpoint(raw_code, match.span()[1] - 1)
 
     # Steps are either c[x](c[y]) or c[x](c[y],c[z])
     step_start = r"c\[(\d+)\]\(c\[(\d+)\](,c(\[(\d+)\]))?\)"
